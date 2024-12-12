@@ -2,18 +2,21 @@ import psycopg2, datetime
 from loguru import logger
 from time_counter import TimeCounter
 
+# TODO: все, что касается констант должно лежать в конфиге
+# TODO: пароли и логины это ОЧЕНЬ чувствительные данные они ОБЯЗАТЕЛЬНО должны браться из ".env" файла
 db_name = "test_task"
 db_user = "postgres"
 db_password = "1236"
 db_host = "localhost"
 
+# TODO: создание соединения и получения курсору стоит реализовать иначе (как вариант через контекстный менеджер, пример отправил тебе в телеге)
 conn = psycopg2.connect(database=db_name, user=db_user, password=db_password, host=db_host)
 cur = conn.cursor()
 
 
 def get_users():
     try:
-        cur.execute("SELECT user_name AS username FROM users")
+        cur.execute("SELECT user_name AS username FROM users")  # TODO: запросы лучше положить в переменную(можно прям в этой же функции, но можно и вынести, если запрос может использоваться где то еще), а потом эту переменную уже использовать.
     except Exception as exc:
         logger.exception("Не удалось получить список пользователей из базы", exc)
     colnames = [desc[0] for desc in cur.description]

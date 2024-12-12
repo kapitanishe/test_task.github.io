@@ -7,12 +7,12 @@ app = Flask(__name__)
 
 
 @app.route("/user/list", methods=["GET"])
-def users_get_query():
+def users_get_query():  # TODO: принято писать сначало действие то есть get_user, а query вообще лишнее
     try:
         users = database.get_users()
     except Exception as exc:
         logger.exception("Не удалось получить список пользователей из функции get_users", exc)
-    return jsonify(users)
+    return jsonify(users)  # TODO: тут может быть ситуация, когда переменная не будет создана, но ты ее пытаешься использовать
 
 
 @app.route("/boards", methods=["GET"])
