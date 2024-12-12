@@ -18,9 +18,6 @@ cur = conn.cursor()
 # def get_users():
 #     try:
 #         cur.execute("SELECT user_name AS username FROM users")  # TODO: запросы лучше положить в переменную(можно прям в этой же функции, но можно и вынести, если запрос может использоваться где то еще), а потом эту переменную уже использовать.
-#     except psycopg2.errors.connect_error as e:
-#         logger.error(e)
-#         raise ErrorConnectDb
 #     except Exception as exc:
 #         logger.exception("Не удалось получить список пользователей из базы", exc)
 #

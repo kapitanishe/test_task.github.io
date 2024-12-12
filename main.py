@@ -9,9 +9,12 @@ app = Flask(__name__)
 def users_get_query():  # TODO: принято писать сначало действие то есть get_user, а query вообще лишнее
     try:
         users = database.get_users()
-    except ErrorConnectDb:
+    except psycoph.errors.blabla:
         logger.error("Error ErrorConnectDb")
         return "Unknown Error", 500
+    except ZeroDivisionError as e:
+        logger.error(e)
+        return "", 408
     except Exception:
         logger.exception("Error get_users")
         return "", 500
