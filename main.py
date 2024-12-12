@@ -1,7 +1,6 @@
 from flask import Flask, jsonify, request
 from loguru import logger
-import database
-
+from db import db
 
 app = Flask(__name__)
 
@@ -10,8 +9,16 @@ app = Flask(__name__)
 def users_get_query():  # TODO: принято писать сначало действие то есть get_user, а query вообще лишнее
     try:
         users = database.get_users()
-    except Exception as exc:
-        logger.exception("Не удалось получить список пользователей из функции get_users", exc)
+    except ErrorConnectDb:
+        logger.error("Error ErrorConnectDb")
+        return "Unknown Error", 500
+    except Exception:
+        logger.exception("Error get_users")
+        return "", 500
+
+    if not users:
+        return "Users not found", 404
+
     return jsonify(users)  # TODO: тут может быть ситуация, когда переменная не будет создана, но ты ее пытаешься использовать
 
 
@@ -76,18 +83,29 @@ def cards_get_query():
 
 @app.route("/card/create", methods=["POST"])
 def cards_post_query():
+
+
     try:
         req_json = request.json
     except Exception as exc:
         logger.exception("Не удалось получить запрос от пользователя", exc)
+
     title = req_json["title"]
     board = req_json["board"]
     description = req_json["description"]
     estimation = req_json["estimation"]
+
+    try:
+        validation(title, board, description, estimation)
+    except Exception as exc:
+        return "Validation error", 400
+
     try:
         rows_count = database.post_card(title, board, description, estimation)
     except Exception as exc:
         logger.exception("Не удалось добавить карту через функцию post_card", exc)
+
+
     return jsonify({"response": "Added " + str(rows_count) + " row"})
 
 
