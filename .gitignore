@@ -1,0 +1,63 @@
+# IDE-папки и настройки
+.idea/
+
+# Файлы настроек среды
+.vscode/
+
+# Артефакты Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Файлы виртуального окружения
+venv/
+env/
+ENV/
+.venv/
+
+# Логи и временные файлы
+*.log
+*.tmp
+*.swp
+*.swo
+*.swn
+*.bak
+*.orig
+
+# Артефакты тестирования
+.coverage
+.tox/
+.cache/
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# Файлы от инструментов сборки
+*.egg
+*.egg-info/
+dist/
+build/
+*.wheel
+
+# База данных SQLite
+*.sqlite3
+db.sqlite3
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Конфиденциальные файлы
+.env
+*.secret
+
+# Системные файлы
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Sandbox-related directories and files
+sandbox/
+*.sandbox/
+sandbox_*/
+sandbox_temp/

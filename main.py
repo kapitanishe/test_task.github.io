@@ -1,162 +1,160 @@
 from flask import Flask, jsonify, request
 from loguru import logger
-from db import db
+from db import user, board, card
 
 app = Flask(__name__)
 
 
 @app.route("/user/list", methods=["GET"])
-def users_get_query():  # TODO: принято писать сначало действие то есть get_user, а query вообще лишнее
+def get_users():
     try:
-        users = database.get_users()
-    except psycoph.errors.blabla:
-        logger.error("Error ErrorConnectDb")
-        return "Unknown Error", 500
-    except ZeroDivisionError as e:
-        logger.error(e)
-        return "", 408
+        users = user.get_users()
     except Exception:
         logger.exception("Error get_users")
         return "", 500
-
-    if not users:
-        return "Users not found", 404
-
-    return jsonify(users)  # TODO: тут может быть ситуация, когда переменная не будет создана, но ты ее пытаешься использовать
+    else:
+        return jsonify(users)
 
 
 @app.route("/boards", methods=["GET"])
-def boards_get_query():
+def get_boards():
     try:
-        boards = database.get_boards()
+        boards = board.get_boards()
     except Exception as exc:
-        logger.exception("Не удалось получить перечень досок из функции get_boards", exc)
-    return jsonify(boards)
+        logger.exception("Error get_boards")
+        return "Unknown error", 500
+    else:
+        return jsonify(boards)
 
 
 @app.route("/board/create", methods=["POST"])
-def boards_post_query():
+def post_board():
     try:
         req_json = request.json
-    except Exception as exc:
-        logger.exception("Не удалось получить запрос от пользователя", exc)
+    except Exception:
+        logger.exception("Error request post_boards")
+    else:
+        if not "title" in req_json:
+            return "title is required", 400
+        if not "user_id" in req_json:
+            return "user_id is required", 400
 
-    if not "title" in req_json:
-        return "title is required", 400
-    if not "user_id" in req_json:
-        return "user_id is required", 400
-
-    title = req_json["title"]
-    user_id = req_json["user_id"]
-    try:
-        rows_count = database.post_board(title, user_id)
-    except Exception as exc:
-        logger.exception("Не удалось добавить доску через функцию post_board", exc)
-    return jsonify({"response": "Added " + str(rows_count) + " row"})
+        title = req_json["title"]
+        user_id = req_json["user_id"]
+        try:
+            response = board.post_board(title, user_id)
+        except Exception:
+            logger.exception("Error post_board")
+            return "Unknown error", 500
+        else:
+            return jsonify(response)
 
 
 @app.route("/board/delete", methods=["DELETE"])
-def boards_del_query():
-    try:
-        req_json = request.json
-    except Exception as exc:
-        logger.exception("Не удалось получить запрос от пользователя", exc)
+def del_boards():
+    req_json = request.json
     if not "title" in req_json:
         return "title is required", 400
     title = req_json["title"]
     try:
-        rows_count = database.del_board(title)
-    except Exception as exc:
-        logger.exception("Не удалось удалить доску через функцию del_board", exc)
-    return jsonify({"response": "Deleted " + str(rows_count) + " row"})
+        response = board.del_board(title)
+    except Exception:
+        logger.exception("Error del_boards")
+        return "Unknown error", 500
+    else:
+        return jsonify(response)
 
 
 @app.route("/cards", methods=["GET"])
-def cards_get_query():
+def get_cards():
     # Простой, но грязный пример
-    limit = int(request.args.get("limit"))
-    if limit > 1000:
-        return "The limit is expected to be between 1 and 1000", 400
+    # limit = int(request.args.get("limit"))
+    # if limit > 1000:
+    #     return "The limit is expected to be between 1 and 1000", 400
+
     try:
-        cards = database.get_cards()
-    except Exception as exc:
-        logger.exception("Не удалось получить перечень карточек из функции get_cards", exc)
+        cards = card.get_cards()
+    except Exception:
+        logger.exception("Error get_cards")
+        return "Unknown error", 500
     return jsonify(cards)
 
 
 @app.route("/card/create", methods=["POST"])
-def cards_post_query():
-
-
+def post_card():
     try:
         req_json = request.json
-    except Exception as exc:
-        logger.exception("Не удалось получить запрос от пользователя", exc)
-
-    title = req_json["title"]
-    board = req_json["board"]
-    description = req_json["description"]
-    estimation = req_json["estimation"]
-
-    try:
-        validation(title, board, description, estimation)
-    except Exception as exc:
-        return "Validation error", 400
-
-    try:
-        rows_count = database.post_card(title, board, description, estimation)
-    except Exception as exc:
-        logger.exception("Не удалось добавить карту через функцию post_card", exc)
-
-
-    return jsonify({"response": "Added " + str(rows_count) + " row"})
+    except Exception:
+        logger.exception("Can't get request from user")
+    else:
+        title = req_json["title"]
+        board = req_json["board"]
+        description = req_json["description"]
+        estimation = req_json["estimation"]
+        try:
+            new_card = card.post_card(title, board, description, estimation)
+        except Exception:
+            logger.exception("Error post_card")
+        else:
+            return jsonify(new_card)
 
 
 @app.route("/card/delete", methods=["DELETE"])
-def cards_del_query():
+def del_card():
     try:
         req_json = request.json
-    except Exception as exc:
-        logger.exception("Не удалось получить запрос от пользователя", exc)
-    if not "title" in req_json:
-        return "title is required", 400
-    title = req_json["title"]
-    try:
-        rows_count = database.del_card(title)
-    except Exception as exc:
-        logger.exception("Не удалось удалить карточку через функцию del_card", exc)
-    return jsonify({"response": "Deleted " + str(rows_count) + " row"})
+    except Exception:
+        logger.exception("Can't get request from user")
+    else:
+        if "title" not in req_json:
+            return "title is required", 400
+        title = req_json["title"]
+        try:
+            response = card.del_card(title)
+        except Exception:
+            logger.exception("Error del_cards")
+            return "Unknown error", 500
+        else:
+            return jsonify(response)
 
 
 @app.route("/card/update", methods=["PUT"])
-def cards_put_query():
+def put_card():
     try:
         req_json = request.json
-    except Exception as exc:
-        logger.exception("Не удалось получить запрос от пользователя", exc)
-    title = req_json["title"]
-    board = req_json["board"]
-    try:
-        card_updated = database.update_card(title, board)
-    except Exception as exc:
-        logger.exception("Не удалось обновить карточку через функцию update_card", exc)
-    return jsonify(card_updated)
+    except Exception:
+        logger.exception("Can't get request from user")
+    else:
+        title = req_json["title"]
+        board = req_json["board"]
+        try:
+            card_updated = card.update_card(title, board)
+        except Exception:
+            logger.exception("Error update_card")
+            return "Unknown error", 500
+        else:
+            return jsonify(card_updated)
 
 
 @app.route("/report/cards_by_column", methods=["GET"])
-def get_cards_by_column_query():
+def get_card_estimation():
     try:
         req_json = request.json
-    except Exception as exc:
-        logger.exception("Не удалось получить запрос от пользователя", exc)
-    board = req_json["board"]
-    column = req_json["column"]
-    assignee = req_json["assignee"]
+    except Exception:
+        logger.exception("Can't get request from user")
+    else:
+        board = req_json["board"]
+        column = req_json["column"]
+        assignee = req_json["assignee"]
+
     try:
-        cards_by_column = database.get_cards_by_column(board, column, assignee)
-    except Exception as exc:
-        logger.exception("Не удалось получить отчет по колонке через функцию get_cards_by_column", exc)
-    return jsonify(cards_by_column)
+        cards_by_column = card.get_estimation_card(board, column, assignee)
+    except Exception:
+        logger.exception("Error get_estimation_card")
+        return "Unknown error", 500
+    else:
+        return jsonify(cards_by_column)
+
 
 # Run the Flask app on port 7000
 if __name__ == "__main__":
