@@ -1,6 +1,6 @@
+from app.http_layer.handlers.board import del_board, get_boards, post_board
+from app.http_layer.handlers.card import del_card, get_card_estimation, get_cards, post_card, put_card
 from app.http_layer.handlers.user import get_users
-from app.http_layer.handlers.board import get_boards, post_board, del_board
-from app.http_layer.handlers.card import get_cards, post_card, del_card, put_card, get_card_estimation
 
 
 def register_routes(app):

@@ -1,6 +1,8 @@
 import datetime
-from db.connection_manager import get_cursor
+
 from loguru import logger
+
+from db.connection_manager import get_cursor
 
 
 def get_boards():
@@ -9,7 +11,7 @@ def get_boards():
         with get_cursor() as cursor:
             cursor.execute(query)
             colnames = [desc[0] for desc in cursor.description]
-            rowdicts = [dict(zip(colnames, row)) for row in cursor.fetchall()]
+            rowdicts = [dict(zip(colnames, row, strict=False)) for row in cursor.fetchall()]
     except Exception:
         logger.exception("Failed to fetch boards")
         return {"count": 0, "boards": []}
@@ -26,7 +28,7 @@ def post_board(new_board_name, new_board_user_id):
         with get_cursor() as cursor:
             cursor.execute(query)
             colnames = [desc[0] for desc in cursor.description]
-            rowdicts = [dict(zip(colnames, row)) for row in cursor.fetchall()]
+            rowdicts = [dict(zip(colnames, row, strict=False)) for row in cursor.fetchall()]
     except Exception:
         logger.exception("Failed to create a new board")
         return {"count": 0, "boards": []}
@@ -41,7 +43,7 @@ def del_board(del_board_name):
             cursor.execute(query)
             deleted_rows = cursor.fetchall()
             colnames = [desc[0] for desc in cursor.description]
-            rowdicts = [dict(zip(colnames, row)) for row in deleted_rows]
+            rowdicts = [dict(zip(colnames, row, strict=False)) for row in deleted_rows]
     except Exception:
         logger.exception("Failed to delete the board")
         return {"count": 0, "boards": []}

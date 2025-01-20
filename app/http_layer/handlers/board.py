@@ -1,12 +1,13 @@
 from flask import jsonify, request
 from loguru import logger
+
 from db import board
 
 
 def get_boards():
     try:
         boards = board.get_boards()
-    except Exception as exc:
+    except Exception:
         logger.exception("Error get_boards")
         return "Unknown error", 500
     else:
@@ -19,9 +20,9 @@ def post_board():
     except Exception:
         logger.exception("Error request post_boards")
     else:
-        if not "title" in req_json:
+        if "title" not in req_json:
             return "title is required", 400
-        if not "user_id" in req_json:
+        if "user_id" not in req_json:
             return "user_id is required", 400
 
         title = req_json["title"]
@@ -37,7 +38,7 @@ def post_board():
 
 def del_board():
     req_json = request.json
-    if not "title" in req_json:
+    if "title" not in req_json:
         return "title is required", 400
     title = req_json["title"]
     try:

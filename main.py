@@ -1,4 +1,5 @@
 from flask import Flask
+
 from app.http_layer.routes import register_routes
 
 
@@ -11,4 +12,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

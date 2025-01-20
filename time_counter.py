@@ -48,85 +48,81 @@ class TimeCounter:
                 if element[i].isalpha():
                     if counter == 0:
                         value_of_time = int(element[:i])
-                        if element[i] == 'm':
+                        if element[i] == "m":
                             hours_in_element = value_of_time * 160
-                        elif element[i] == 'w':
+                        elif element[i] == "w":
                             hours_in_element = value_of_time * 40
-                        elif element[i] == 'd':
+                        elif element[i] == "d":
                             hours_in_element = value_of_time * 8
-                        elif element[i] == 'h':
+                        elif element[i] == "h":
                             hours_in_element = value_of_time
                         counter += 1
                         place_of_alpha = i
                     else:
-                        value_of_time = int(element[place_of_alpha + 1:i])
-                        if element[i] == 'w':
+                        value_of_time = int(element[place_of_alpha + 1 : i])
+                        if element[i] == "w":
                             hours_in_element += value_of_time * 40
-                        elif element[i] == 'd':
+                        elif element[i] == "d":
                             hours_in_element += value_of_time * 8
-                        elif element[i] == 'h':
+                        elif element[i] == "h":
                             hours_in_element += value_of_time
                         place_of_alpha = i
             summ_of_estimation += hours_in_element
             self.summ_of_estimation = summ_of_estimation
 
     def hours_counter(self):
-
         # summ_of_estimation = self.summ_of_estimation
         # if summ_of_estimation < 8:
         # estimation = str(self.summ_of_estimation) + 'h'
-        self.full_estimation = str(self.summ_of_estimation) + 'h'
+        self.full_estimation = str(self.summ_of_estimation) + "h"
 
     def days_counter(self):
-
         time_list = []
 
         days = self.summ_of_estimation // 8
-        time_list.extend([str(days), 'd'])
+        time_list.extend([str(days), "d"])
 
         hours = self.summ_of_estimation % 8
         if hours != 0:
-            time_list.extend([str(hours), 'h'])
+            time_list.extend([str(hours), "h"])
 
-        estimation = ''.join(time_list)
+        estimation = "".join(time_list)
         self.full_estimation = estimation
 
     def weeks_counter(self):
-
         time_list = []
 
         weeks = self.summ_of_estimation // 40
-        time_list.extend([str(weeks), 'w'])
+        time_list.extend([str(weeks), "w"])
 
         days = (self.summ_of_estimation - weeks * 40) // 8
         if days != 0:
-            time_list.extend([str(days), 'd'])
+            time_list.extend([str(days), "d"])
 
         hours = (self.summ_of_estimation - weeks * 40) % 8
         if hours != 0:
-            time_list.extend([str(hours), 'h'])
+            time_list.extend([str(hours), "h"])
 
-        estimation = ''.join(time_list)
+        estimation = "".join(time_list)
         self.full_estimation = estimation
 
     def months_counter(self):
-
         time_list = []
 
         months = self.summ_of_estimation // 160
-        time_list.extend([str(months), 'm'])
+        time_list.extend([str(months), "m"])
 
         weeks = (self.summ_of_estimation - months * 160) // 40
         if weeks != 0:
-            time_list.extend([str(weeks), 'w'])
+            time_list.extend([str(weeks), "w"])
 
         days = (self.summ_of_estimation - months * 160 - weeks * 40) // 8
         if days != 0:
-            time_list.extend([str(days), 'd'])
+            time_list.extend([str(days), "d"])
 
         hours = (self.summ_of_estimation - months * 160 - weeks * 40) % 8
         if hours != 0:
-            time_list.extend([str(hours), 'h'])
+            time_list.extend([str(hours), "h"])
 
-        estimation = ''.join(time_list)
+        estimation = "".join(time_list)
         self.full_estimation = estimation

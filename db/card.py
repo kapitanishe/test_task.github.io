@@ -1,7 +1,9 @@
 import datetime
+
+from loguru import logger
+
 from db.connection_manager import get_cursor
 from time_counter import TimeCounter
-from loguru import logger
 
 
 def get_cards():
@@ -10,7 +12,7 @@ def get_cards():
         with get_cursor() as cursor:
             cursor.execute(query)
             colnames = [desc[0] for desc in cursor.description]
-            rowdicts = [dict(zip(colnames, row)) for row in cursor.fetchall()]
+            rowdicts = [dict(zip(colnames, row, strict=False)) for row in cursor.fetchall()]
     except Exception:
         logger.exception("Failed to fetch cards")
         return {"count": 0, "cards": []}
@@ -35,7 +37,7 @@ def post_card(new_card_name, new_card_board_name, new_card_description, new_card
         with get_cursor() as cursor:
             cursor.execute(query_post_card)
             colnames = [desc[0] for desc in cursor.description]
-            rowdicts = [dict(zip(colnames, row)) for row in cursor.fetchall()]
+            rowdicts = [dict(zip(colnames, row, strict=False)) for row in cursor.fetchall()]
     except Exception:
         logger.exception("Failed to create a new card")
         return {"count": 0, "cards": []}
@@ -49,8 +51,8 @@ def del_card(del_card_title):
         with get_cursor() as cursor:
             cursor.execute(query)
             colnames = [desc[0] for desc in cursor.description]
-            rowdicts = [dict(zip(colnames, row)) for row in cursor.fetchall()]
-    except Exception as exc:
+            rowdicts = [dict(zip(colnames, row, strict=False)) for row in cursor.fetchall()]
+    except Exception:
         logger.exception("Failed to delete the card")
         return {"count": 0, "cards": []}
     else:
@@ -99,7 +101,7 @@ def update_card(card_title, board_name):
         with get_cursor() as cursor:
             cursor.execute(query_card_select)
             colnames = [desc[0] for desc in cursor.description]
-            response = [dict(zip(colnames, row)) for row in cursor.fetchall()]
+            response = [dict(zip(colnames, row, strict=False)) for row in cursor.fetchall()]
     except Exception:
         logger.exception("Failed to get updated card")
         return {"count": 0, "cards": []}
@@ -137,12 +139,18 @@ def get_estimation_card(board_name_in_query, column_name_in_query, assignee_in_q
             cursor.execute(query_card)
             rows_count = cursor.rowcount
             colnames = [desc[0] for desc in cursor.description]
-            cards_selected = [dict(zip(colnames, row)) for row in cursor.fetchall()]
+            cards_selected = [dict(zip(colnames, row, strict=False)) for row in cursor.fetchall()]
 
     except Exception:
         logger.exception("Failed to get cards")
         return {"count": 0, "cards": []}
     else:
-        response = dict(board=board_name_in_query, column=column_name_in_query, assignee=assignee_in_query,
-                        count=rows_count, estimation=final_estimation, cards=cards_selected)
+        response = dict(
+            board=board_name_in_query,
+            column=column_name_in_query,
+            assignee=assignee_in_query,
+            count=rows_count,
+            estimation=final_estimation,
+            cards=cards_selected,
+        )
         return response

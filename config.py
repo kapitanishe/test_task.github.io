@@ -1,8 +1,9 @@
-from dotenv import load_dotenv
 import os
 
+from dotenv import load_dotenv
+
 # Загрузка переменных окружения из файла .env
-load_dotenv()  #TODO: убрать при deploy
+load_dotenv()  # TODO: убрать при deploy
 
 
 class Config:

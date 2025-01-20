@@ -1,5 +1,6 @@
-from db.connection_manager import get_cursor
 from loguru import logger
+
+from db.connection_manager import get_cursor
 
 
 def get_users():
@@ -8,7 +9,7 @@ def get_users():
         with get_cursor() as cursor:
             cursor.execute(query)
             colnames = [desc[0] for desc in cursor.description]
-            rowdicts = [dict(zip(colnames, row)) for row in cursor.fetchall()]
+            rowdicts = [dict(zip(colnames, row, strict=False)) for row in cursor.fetchall()]
     except Exception:
         logger.exception("Failed to fetch users")
         return {"count": 0, "users": []}

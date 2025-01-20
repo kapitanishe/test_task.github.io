@@ -1,15 +1,14 @@
+from contextlib import contextmanager
+
 import psycopg2
 from psycopg2.extras import DictCursor
-from contextlib import contextmanager
+
 from config import Config
 
 
 def get_connection():
     return psycopg2.connect(
-        user=Config.DB_USER,
-        password=Config.DB_PASSWORD,
-        host=Config.DB_HOST,
-        database=Config.DB_NAME
+        user=Config.DB_USER, password=Config.DB_PASSWORD, host=Config.DB_HOST, database=Config.DB_NAME
     )
 
 
