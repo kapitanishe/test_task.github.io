@@ -33,7 +33,7 @@ def post_board(new_board_name, new_board_user_id):
         logger.exception("Failed to create a new board")
         return {"count": 0, "boards": []}
     else:
-        return {"count of added boards": cursor.rowcount, "boards added": rowdicts}
+        return {"count of added boards": cursor.rowcount,     "boards added": rowdicts}
 
 
 def del_board(del_board_name):
