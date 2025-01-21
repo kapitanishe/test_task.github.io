@@ -21,26 +21,30 @@ def get_boards():
 
 def post_board(new_board_name, new_board_user_id):
     dt_now = datetime.datetime.now()
-    query = f"""INSERT INTO boards (board_name, created_at, last_updated_at, status_id, user_id)
-                VALUES ('{new_board_name}', '{dt_now}', '{dt_now}', 1, '{new_board_user_id}')
-                RETURNING *"""
+    query = """
+            INSERT INTO boards (board_name, created_at, last_updated_at, status_id, user_id)
+            VALUES (%s, %s, %s, %s, %s)
+            RETURNING *
+    """
+    params = (new_board_name, dt_now, dt_now, 1, new_board_user_id)
     try:
         with get_cursor() as cursor:
-            cursor.execute(query)
+            cursor.execute(query, params)
             colnames = [desc[0] for desc in cursor.description]
             rowdicts = [dict(zip(colnames, row, strict=False)) for row in cursor.fetchall()]
     except Exception:
         logger.exception("Failed to create a new board")
         return {"count": 0, "boards": []}
     else:
-        return {"count of added boards": cursor.rowcount,     "boards added": rowdicts}
+        return {"count of added boards": cursor.rowcount, "boards added": rowdicts}
 
 
 def del_board(del_board_name):
-    query = f"""DELETE FROM boards WHERE board_name = '{del_board_name}' RETURNING *"""
+    query = "DELETE FROM boards WHERE board_name = %s RETURNING *"
+    params = (del_board_name,)
     try:
         with get_cursor() as cursor:
-            cursor.execute(query)
+            cursor.execute(query, params)
             deleted_rows = cursor.fetchall()
             colnames = [desc[0] for desc in cursor.description]
             rowdicts = [dict(zip(colnames, row, strict=False)) for row in deleted_rows]

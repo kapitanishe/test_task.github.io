@@ -7,7 +7,7 @@ def main():
     app = Flask(__name__)
 
     register_routes(app)  # Регистрация маршрутов
-    app.run(host="0.0.0.0", port=7000, debug=False)
+    app.run(host="127.0.0.1", port=7000, debug=False)
 
 
 if __name__ == "__main__":

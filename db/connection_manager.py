@@ -21,10 +21,10 @@ def get_cursor():
         cursor = connection.cursor(cursor_factory=DictCursor)  # DictCursor возвращает строки в виде словарей
         yield cursor
         connection.commit()  # Фиксируем изменения в случае успешного выполнения
-    except Exception as e:
+    except Exception:
         if connection:
             connection.rollback()  # Откатываем изменения при ошибке
-        raise e
+        raise
     finally:
         if cursor:
             cursor.close()  # Закрываем курсор

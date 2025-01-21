@@ -71,9 +71,6 @@ class TimeCounter:
             self.summ_of_estimation = summ_of_estimation
 
     def hours_counter(self):
-        # summ_of_estimation = self.summ_of_estimation
-        # if summ_of_estimation < 8:
-        # estimation = str(self.summ_of_estimation) + 'h'
         self.full_estimation = str(self.summ_of_estimation) + "h"
 
     def days_counter(self):
