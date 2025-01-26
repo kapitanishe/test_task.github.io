@@ -19,14 +19,14 @@ def get_boards():
         return {"count": cursor.rowcount, "boards": rowdicts}
 
 
-def post_board(new_board_name, new_board_user_id):
+def post_board(new_board, board_user_id):
     dt_now = datetime.datetime.now()
     query = """
             INSERT INTO boards (board_name, created_at, last_updated_at, status_id, user_id)
             VALUES (%s, %s, %s, %s, %s)
             RETURNING *
     """
-    params = (new_board_name, dt_now, dt_now, 1, new_board_user_id)
+    params = (new_board, dt_now, dt_now, 1, board_user_id)
     try:
         with get_cursor() as cursor:
             cursor.execute(query, params)

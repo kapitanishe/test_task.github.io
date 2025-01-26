@@ -1,6 +1,7 @@
 from flask import jsonify, request
 from loguru import logger
 
+from app.http_layer.schemas.board import BoardDel, BoardPost
 from db import board
 
 
@@ -15,31 +16,31 @@ def get_boards():
 
 
 def post_board():
-    try:
-        req_json = request.json
-    except Exception:
-        logger.exception("Error request post_boards")
-    else:
-        if "title" not in req_json:
-            return "title is required", 400
-        if "user_id" not in req_json:
-            return "user_id is required", 400
+    inputs = BoardPost(request)
+    if not inputs.validate():
+        logger.error(f"Validation errors: {inputs.errors}")
+        return jsonify({"errors": inputs.errors}), 400
 
-        title = req_json["title"]
-        user_id = req_json["user_id"]
-        try:
-            response = board.post_board(title, user_id)
-        except Exception:
-            logger.exception("Error post_board")
-            return "Unknown error", 500
-        else:
-            return jsonify(response)
+    req_json = request.json
+    title = req_json["title"]
+    user_id = req_json["user_id"]
+
+    try:
+        response = board.post_board(title, user_id)
+    except Exception:
+        logger.exception("Error post_board")
+        return "Unknown error", 500
+    else:
+        return jsonify(response)
 
 
 def del_board():
+    inputs = BoardDel(request)
+    if not inputs.validate():
+        logger.error(f"Validation errors: {inputs.errors}")
+        return jsonify({"errors": inputs.errors}), 400
+
     req_json = request.json
-    if "title" not in req_json:
-        return "title is required", 400
     title = req_json["title"]
     try:
         response = board.del_board(title)

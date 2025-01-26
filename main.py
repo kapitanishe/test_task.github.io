@@ -6,7 +6,7 @@ from app.http_layer.routes import register_routes
 def main():
     app = Flask(__name__)
 
-    register_routes(app)  # Регистрация маршрутов
+    register_routes(app)
     app.run(host="127.0.0.1", port=7000, debug=False)
 
 
