@@ -1,6 +1,9 @@
 from loguru import logger
 
 
+# TODO: вынести в бизнес логику (core)
+
+
 class TimeCounter:
     def __init__(self, card_records: list[tuple]) -> None:
         self.card_records = card_records

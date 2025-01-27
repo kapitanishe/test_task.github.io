@@ -15,3 +15,11 @@ def get_users():
         return {"count": 0, "users": []}
     else:
         return {"count": cursor.rowcount, "users": rowdicts}
+
+
+def sign_up_user():  # TODO: реализовать
+    pass
+
+
+def sign_in_user():  # TODO: реализовать
+    pass
