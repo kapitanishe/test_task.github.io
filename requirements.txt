@@ -3,4 +3,6 @@ loguru==0.7.3
 psycopg2==2.9.10
 python-dotenv==1.0.1
 pre_commit==4.0.1
-Flask-Inputs==1.0.0
+pydantic==2.11.0a1
+flask-bcrypt==1.0.1
+Flask-JWT-Extended==4.7.1
